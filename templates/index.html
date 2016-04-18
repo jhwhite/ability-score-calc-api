@@ -1,0 +1,245 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Pathfinder Ability Score Calculator API</h1>
+    <p>
+        A few years ago I wrote a somewhat popular <a href="http://www.jody-white.com/pathfinder-ability-score-calculator.php">ability score calculator</a>.
+        I've had some feature requests so I thought instead of rewriting the app I would make an API so
+        I or others could make their own calculator.
+    </p>
+
+    <h2>How do I use this?</h2>
+
+    <h3 id="ability-score-points">Ability Score Points</h3>
+    <p>This method call returns the campaign types and the points associated with them.</p>
+
+    <pre>/ability-score-points</pre>
+
+    <pre>
+        {
+          "ability_score_points": [
+            {
+              "abilityscorepointid": 1,
+              "campaigntype": "Low Fantasy",
+              "points": 10
+            },
+            {
+              "abilityscorepointid": 2,
+              "campaigntype": "Standard Fantasy",
+              "points": 15
+            },
+            {
+              "abilityscorepointid": 3,
+              "campaigntype": "High Fantasy",
+              "points": 20
+            },
+            {
+              "abilityscorepointid": 4,
+              "campaigntype": "Epic Fantasy",
+              "points": 25
+            }
+          ]
+        }
+    </pre>
+
+    <h3 id="calculate-ability-mod">Calculate Ability Mod</h3>
+    <p>This method accepts the score and return the mod for that score, the number of bonus spells for that mod
+        and the carrying capacity for that mod. Along with the number of points that score costs. The api makes no
+        assumption about which ability you're calling this for so it will always return bonus spells and carrying capacity.
+    </p>
+
+    <pre>/calculate-ability-mod/10</pre>
+
+    <pre>
+        {
+          "bonus_spells": [
+            {
+              "abilitymodifier": 0,
+              "bonusspellid": 6,
+              "eighthlevel": null,
+              "fifthlevel": null,
+              "firstlevel": null,
+              "fourthlevel": null,
+              "ninthlevel": null,
+              "secondlevel": null,
+              "seventhlevel": null,
+              "sixthlevel": null,
+              "thirdlevel": null
+            },
+            {}
+          ],
+          "carrying_capacity": {
+            "carrying_capacity_id": 10,
+            "heavy_load": "67-100 lbs.",
+            "light_load": "33 lbs. or less",
+            "medium_load": "34-66 lbs.",
+            "strength_score": 10
+          },
+          "mod": 0.0,
+          "points": 0
+        }
+    </pre>
+
+    <h3 id="bonus-spells">Bonus Spells</h3>
+
+    <p>There are two end points for bonus spells. One will return the entire bonus spells table. While the second
+        accepts an ability mod and returns just the number of bonus spells for that mod.
+    </p>
+
+    <pre>/bonus-spells</pre>
+    <pre>
+        {
+          "bonus_spells": [
+            {
+              "abilitymodifier": -5,
+              "bonusspellid": 1,
+              "eighthlevel": null,
+              "fifthlevel": null,
+              "firstlevel": null,
+              "fourthlevel": null,
+              "ninthlevel": null,
+              "secondlevel": null,
+              "seventhlevel": null,
+              "sixthlevel": null,
+              "thirdlevel": null
+            },
+            {
+              "abilitymodifier": -4,
+              "bonusspellid": 2,
+              "eighthlevel": null,
+              "fifthlevel": null,
+              "firstlevel": null,
+              "fourthlevel": null,
+              "ninthlevel": null,
+              "secondlevel": null,
+              "seventhlevel": null,
+              "sixthlevel": null,
+              "thirdlevel": null
+            },
+            ...
+          ]
+        }
+    </pre>
+    <pre>/bonus-spell/12</pre>
+    <pre>
+        {
+          "bonus_spell": {
+            "abilitymodifier": 12,
+            "bonusspellid": 18,
+            "eighthlevel": 2,
+            "fifthlevel": 2,
+            "firstlevel": 3,
+            "fourthlevel": 3,
+            "ninthlevel": 1,
+            "secondlevel": 3,
+            "seventhlevel": 2,
+            "sixthlevel": 2,
+            "thirdlevel": 3
+          }
+        }
+    </pre>
+
+    <h3 id="carrying-capacity">Carrying Capacity</h3>
+    <p>
+        There are two end points for this api call. One will return the entire carrying capacity table while the other
+        accepts a strength score (not mod) and returns the carrying capacity for that score.
+    </p>
+
+    <pre>/carrying-capacities</pre>
+    <pre>
+        {
+          "carrying_capacities": [
+            {
+              "carrying_capacity_id": 1,
+              "heavy_load": "7-10 lbs.",
+              "light_load": "3 lbs. or less",
+              "medium_load": "4-6 lbs.",
+              "strength_score": 1
+            },
+            {
+              "carrying_capacity_id": 2,
+              "heavy_load": "14-20 lbs.",
+              "light_load": "6 lbs. or less",
+              "medium_load": "7-13 lbs.",
+              "strength_score": 2
+            },
+            {
+              "carrying_capacity_id": 3,
+              "heavy_load": "21-30 lbs.",
+              "light_load": "10 lbs. or less",
+              "medium_load": "11-20 lbs.",
+              "strength_score": 3
+            },
+            ...
+          ]
+        }
+    </pre>
+
+    <pre>/carrying-capacity/10</pre>
+    <pre>
+        {
+          "carrying_capacity": {
+            "carrying_capacity_id": 10,
+            "heavy_load": "67-100 lbs.",
+            "light_load": "33 lbs. or less",
+            "medium_load": "34-66 lbs.",
+            "strength_score": 10
+          }
+        }
+    </pre>
+
+    <h3 id="race">Races</h3>
+    <p>
+        There are two end points for this api call. The first returns the entire race table. While the other accepts
+        the name of the race and returns just that one. Only races from the core rulebook are present.
+    </p>
+    <pre>/races</pre>
+    <pre>
+        {
+          "races": [
+            {
+              "charisma": -2,
+              "constitution": 2,
+              "description": "Dwarves are both tough and wise, but also a bit gruff.",
+              "dexterity": 0,
+              "intelligence": 0,
+              "points": 0,
+              "race": "Dwarf",
+              "race_id": 1,
+              "strength": 0,
+              "wisdom": 2
+            },
+            {
+              "charisma": 0,
+              "constitution": -2,
+              "description": "Elves are nimble, both in body and mind, but their form is frail.",
+              "dexterity": 2,
+              "intelligence": 2,
+              "points": 0,
+              "race": "Elf",
+              "race_id": 2,
+              "strength": 0,
+              "wisdom": 0
+            },
+            ...
+          ]
+        }
+    </pre>
+
+    <pre>/race/human</pre>
+    <pre>
+        {
+          "race": {
+            "charisma": 0,
+            "constitution": 0,
+            "description": "Human characters get a +2 bonus to one ability score of their choice at creation to represent their varied nature.",
+            "dexterity": 0,
+            "intelligence": 0,
+            "points": 2,
+            "race": "Human",
+            "race_id": 7,
+            "strength": 0,
+            "wisdom": 0
+          }
+        }
+    </pre>
+{% endblock %}
